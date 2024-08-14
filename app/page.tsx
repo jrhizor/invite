@@ -46,7 +46,7 @@ export default function Home() {
           </AccordionTrigger>
           <AccordionContent>
             All events are supported. A description of an event can be anything
-            from "lunch tomorrow at noon at The Sentinel" to copy and pasting a
+            from &quot;lunch tomorrow at noon at The Sentinel&quot; to copy and pasting a
             flight confirmation to copy and pasting a wedding itinerary. This
             will give you Google Calendar invite links for each event extracted
             from the text.
@@ -57,7 +57,7 @@ export default function Home() {
           <AccordionContent>
             If you include a timezone, it will be respected in the invite. If no
             timezone is specified and the event is something local (like a lunch
-            appointment), your calendar's default timezone will be used.
+            appointment), your calendar&apos;s default timezone will be used.
             However, if the event is a flight or hotel booking, the
             airport/hotel information will be used to infer the timezone.
           </AccordionContent>
