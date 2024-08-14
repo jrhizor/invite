@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-})
+});
 
 export const metadata: Metadata = {
-  title: "Create Google Calendar Invites",
-  description: "Easily create Google Calendar invites easily for events that do not automatically get added to your calendar.",
+  title: "invite.sh: Easy Google Calendar Invite Creator",
+  description:
+    "Easily create Google Calendar invites for events that do not automatically get added to your calendar.",
 };
 
 export default function RootLayout({
@@ -20,10 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(
+      <body
+        className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-      )}>{children}</body>
+          fontSans.variable,
+        )}
+      >
+        {children}
+      </body>
     </html>
   );
 }
