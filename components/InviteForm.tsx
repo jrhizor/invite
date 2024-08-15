@@ -20,10 +20,26 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardHeader } from "@/components/ui/card";
 import { CopyInviteButton } from "@/components/CopyInviteButton";
 import { LuCalendarDays } from "react-icons/lu";
-import { CalendarEvent, google } from "calendar-link";
+import {
+  CalendarEvent,
+  google,
+  office365,
+  outlook,
+  yahoo,
+} from "calendar-link";
 import { usePlausible } from "next-plausible";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type CalendarType = "google" | "office365" | "outlook" | "yahoo";
 
 const FormSchema = z.object({
+  calendar: z.enum(["google", "office365", "outlook", "yahoo"]),
   details: z.string().default(""),
 });
 
@@ -43,10 +59,23 @@ function getLocalTime() {
   return formatter.format(new Date());
 }
 
+function getInvite(calendar: CalendarType, event: CalendarEvent): string {
+  switch (calendar) {
+    case "google":
+      return google(event);
+    case "office365":
+      return office365(event);
+    case "outlook":
+      return outlook(event);
+    case "yahoo":
+      return yahoo(event);
+  }
+}
+
 type PlausibleEvents = {
-  submit: never;
-  error: never;
-  success: never;
+  submit: { calendar: string };
+  error: { calendar: string };
+  success: { calendar: string };
 };
 
 export function InviteForm() {
@@ -57,6 +86,9 @@ export function InviteForm() {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      calendar: "google",
+    },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -65,7 +97,7 @@ export function InviteForm() {
     setResult(null);
 
     try {
-      plausible("submit");
+      plausible("submit", { props: { calendar: data.calendar } });
       const response = await fetch("api/invites", {
         method: "POST",
         headers: {
@@ -80,16 +112,16 @@ export function InviteForm() {
       const responseData = await response.json();
 
       if (response.ok) {
-        plausible("success");
+        plausible("success", { props: { calendar: data.calendar } });
         setResult(responseData.events as CalendarEvent[]);
       } else {
-        plausible("error");
+        plausible("error", { props: { calendar: data.calendar } });
         setError(
           responseData.error || "A server error occurred. Please try again.",
         );
       }
     } catch (err) {
-      plausible("error");
+      plausible("error", { props: { calendar: data.calendar } });
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
@@ -108,6 +140,32 @@ export function InviteForm() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
+          <FormField
+            control={form.control}
+            name="calendar"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Calendar Type</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a calendar type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="google">Google</SelectItem>
+                    <SelectItem value="outlook">Outlook</SelectItem>
+                    <SelectItem value="office365">Office365</SelectItem>
+                    <SelectItem value="yahoo">Yahoo</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="details"
@@ -143,7 +201,8 @@ export function InviteForm() {
       {result && result.length > 0 && (
         <div className="mt-6 w-full flex flex-col gap-3">
           {result.map((event, i) => {
-            const invite = google(event);
+            const calendar: CalendarType = form.getValues("calendar");
+            const invite = getInvite(calendar, event);
 
             return (
               <Card key={i} className="w-full">

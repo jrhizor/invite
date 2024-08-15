@@ -1,6 +1,6 @@
 # [invite.sh](https://www.invite.sh)
 
-> Easily create Google Calendar invite links for events that do not automatically get added to your calendar.
+> Easily create Google/Outlook/Office365/Yahoo calendar invite links for events that do not automatically get added to your calendar.
 
 ## Developing
 

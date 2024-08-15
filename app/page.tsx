@@ -25,8 +25,7 @@ export default function Home() {
               <h1 className="font-mono">invite.sh</h1>
             </div>
             <CardDescription>
-              Easily create Google Calendar invite links for events that do not
-              automatically get added to your calendar.
+              Easily create calendar invite links for events.
             </CardDescription>
           </CardHeader>
           <Separator />
@@ -37,6 +36,12 @@ export default function Home() {
       </div>
 
       <Accordion type="single" className="py-6 w-full max-w-4xl" collapsible>
+        <AccordionItem value="item-0">
+          <AccordionTrigger>What calendars are supported?</AccordionTrigger>
+          <AccordionContent>
+            Google, Outlook, Office365, and Yahoo calendars are supported.
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem value="item-1">
           <AccordionTrigger>
             What kind of events are supported?
@@ -45,8 +50,8 @@ export default function Home() {
             All events are supported. A description of an event can be anything
             from &quot;lunch tomorrow at noon at The Sentinel&quot; to copy and
             pasting a flight confirmation to copy and pasting a wedding
-            itinerary. This will give you Google Calendar invite links for each
-            event extracted from the text.
+            itinerary. This will give you calendar invite links for each event
+            extracted from the text.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
