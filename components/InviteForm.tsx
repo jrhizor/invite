@@ -21,6 +21,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { CopyInviteButton } from "@/components/CopyInviteButton";
 import { LuCalendarDays } from "react-icons/lu";
 import { CalendarEvent, google } from "calendar-link";
+import { usePlausible } from "next-plausible";
 
 const FormSchema = z.object({
   details: z.string().default(""),
@@ -42,7 +43,14 @@ function getLocalTime() {
   return formatter.format(new Date());
 }
 
+type PlausibleEvents = {
+  submit: never;
+  error: never;
+  success: never;
+};
+
 export function InviteForm() {
+  const plausible = usePlausible<PlausibleEvents>();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CalendarEvent[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +65,7 @@ export function InviteForm() {
     setResult(null);
 
     try {
+      plausible("submit");
       const response = await fetch("api/invites", {
         method: "POST",
         headers: {
@@ -71,13 +80,16 @@ export function InviteForm() {
       const responseData = await response.json();
 
       if (response.ok) {
+        plausible("success");
         setResult(responseData.events as CalendarEvent[]);
       } else {
+        plausible("error");
         setError(
           responseData.error || "A server error occurred. Please try again.",
         );
       }
     } catch (err) {
+      plausible("error");
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
