@@ -53,8 +53,7 @@ export async function POST(req: Request) {
 
     const ratelimit = new Ratelimit({
       redis: redis,
-      // rate limit to 5 requests per 60 seconds
-      limiter: Ratelimit.slidingWindow(5, "60s"),
+      limiter: Ratelimit.slidingWindow(4, "1m"),
     });
 
     const { success, limit, reset, remaining } = await ratelimit.limit(
@@ -62,8 +61,11 @@ export async function POST(req: Request) {
     );
 
     if (!success) {
-      return new Response(
-        "Slow down, you are making too many requests. If you want to increase your rate limit please email contact@invite.sh.",
+      return Response.json(
+        {
+          error:
+            "Slow down, you are making too many requests. If you want to increase your rate limit please email: contact@invite.sh",
+        },
         {
           status: 429,
           headers: {
@@ -80,7 +82,7 @@ export async function POST(req: Request) {
     if (details === undefined || details.length === 0) {
       return Response.json(
         { error: "You must provide event details to create an invite!" },
-        { status: 500 },
+        { status: 400 },
       );
     }
 
