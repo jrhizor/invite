@@ -81,7 +81,7 @@ type PlausibleEvents = {
 export function InviteForm() {
   const plausible = usePlausible<PlausibleEvents>();
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<CalendarEvent[] | null>([]);
+  const [result, setResult] = useState<CalendarEvent[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof FormSchema>>({
