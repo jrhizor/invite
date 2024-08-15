@@ -34,9 +34,6 @@ export default function Home() {
             <InviteForm />
           </CardContent>
         </Card>
-
-        {/*  todo add card */}
-        {/*  todo add footer */}
       </div>
 
       <Accordion type="single" className="py-6 w-full max-w-4xl" collapsible>
@@ -46,10 +43,10 @@ export default function Home() {
           </AccordionTrigger>
           <AccordionContent>
             All events are supported. A description of an event can be anything
-            from &quot;lunch tomorrow at noon at The Sentinel&quot; to copy and pasting a
-            flight confirmation to copy and pasting a wedding itinerary. This
-            will give you Google Calendar invite links for each event extracted
-            from the text.
+            from &quot;lunch tomorrow at noon at The Sentinel&quot; to copy and
+            pasting a flight confirmation to copy and pasting a wedding
+            itinerary. This will give you Google Calendar invite links for each
+            event extracted from the text.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
