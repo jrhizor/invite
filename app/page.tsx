@@ -16,7 +16,7 @@ import {
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-gray-100">
+    <main className="flex min-h-screen flex-col items-center justify-between p-6 sm:p-24 bg-gray-100">
       <div className="z-10 w-full max-w-5xl items-center justify-between">
         <Card>
           <CardHeader>
@@ -24,9 +24,7 @@ export default function Home() {
               <LuCalendarPlus />
               <h1 className="font-mono">invite.sh</h1>
             </div>
-            <CardDescription>
-              Easily create calendar invite links for events.
-            </CardDescription>
+            <CardDescription>Easily create calendar events!</CardDescription>
           </CardHeader>
           <Separator />
           <CardContent className="pt-6 flex flex-col gap-6">
@@ -84,7 +82,7 @@ export default function Home() {
       </Accordion>
 
       <footer className="py-6 md:px-8 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
             Built by{" "}
             <a

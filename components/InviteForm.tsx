@@ -175,7 +175,7 @@ export function InviteForm() {
                 <FormControl>
                   <Textarea
                     placeholder="Provide any details necessary to describe the event"
-                    className="resize-none"
+                    className="h-32"
                     {...field}
                     disabled={loading}
                   />
