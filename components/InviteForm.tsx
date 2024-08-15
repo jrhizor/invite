@@ -17,7 +17,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Separator } from "@/components/ui/separator";
-import { Card, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CopyInviteButton } from "@/components/CopyInviteButton";
 import { LuCalendarDays } from "react-icons/lu";
 import {
@@ -81,7 +81,7 @@ type PlausibleEvents = {
 export function InviteForm() {
   const plausible = usePlausible<PlausibleEvents>();
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<CalendarEvent[] | null>(null);
+  const [result, setResult] = useState<CalendarEvent[] | null>([]);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -206,7 +206,7 @@ export function InviteForm() {
 
             return (
               <Card key={i} className="w-full">
-                <CardHeader className="flex flex-row justify-between p-3 items-center space-y-0">
+                <CardHeader className="hidden md:flex flex-row justify-between p-3 items-center space-y-0">
                   <div className="inline-flex gap-3 items-center text-muted-foreground">
                     <LuCalendarDays className="ml-1.5" />
                     <a
@@ -218,6 +218,25 @@ export function InviteForm() {
                   </div>
                   <CopyInviteButton value={invite} className="m-0" />
                 </CardHeader>
+
+                <CardHeader className="flex flex-col p-3 space-y-0 md:hidden">
+                  <div className="flex justify-between items-center text-muted-foreground">
+                    <LuCalendarDays />
+                    <CopyInviteButton value={invite} className="m-0" />
+                  </div>
+                </CardHeader>
+
+                <Separator className="md:hidden" />
+
+                <CardContent className="p-3 text-muted-foreground md:hidden">
+                  <a
+                    href={invite}
+                    className="hover:text-primary hover:underline hover:underline-offset-4"
+                    target="_blank"
+                  >
+                    {event.title}
+                  </a>
+                </CardContent>
               </Card>
             );
           })}
