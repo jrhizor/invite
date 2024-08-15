@@ -20,19 +20,31 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardHeader } from "@/components/ui/card";
 import { CopyInviteButton } from "@/components/CopyInviteButton";
 import { LuCalendarDays } from "react-icons/lu";
+import { CalendarEvent, google } from "calendar-link";
 
 const FormSchema = z.object({
   details: z.string().default(""),
 });
 
-interface Invite {
-  name: string;
-  link: string;
+function getLocalTime() {
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long", // e.g., "Monday"
+    year: "numeric", // e.g., "2024"
+    month: "long", // e.g., "August"
+    day: "numeric", // e.g., "14"
+    hour: "numeric", // e.g., "4 PM"
+    minute: "numeric", // e.g., "30"
+    second: "numeric", // e.g., "45"
+    timeZoneName: "short", // e.g., "GMT+5:30"
+  };
+
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  return formatter.format(new Date());
 }
 
 export function InviteForm() {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<Invite[] | null>(null);
+  const [result, setResult] = useState<CalendarEvent[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -52,14 +64,14 @@ export function InviteForm() {
         },
         body: JSON.stringify({
           details: data.details,
-          local_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          localTime: getLocalTime(),
         }),
       });
 
       const responseData = await response.json();
 
       if (response.ok) {
-        setResult(responseData.invites as Invite[]);
+        setResult(responseData.events as CalendarEvent[]);
       } else {
         setError(
           responseData.error || "A server error occurred. Please try again.",
@@ -118,20 +130,22 @@ export function InviteForm() {
       )}
       {result && result.length > 0 && (
         <div className="mt-6 w-full flex flex-col gap-3">
-          {result.map((invite, i) => {
+          {result.map((event, i) => {
+            const invite = google(event);
+
             return (
               <Card key={i} className="w-full">
                 <CardHeader className="flex flex-row justify-between p-3 items-center space-y-0">
                   <div className="inline-flex gap-3 items-center text-muted-foreground">
                     <LuCalendarDays className="ml-1.5" />
                     <a
-                      href={invite.link}
+                      href={invite}
                       className="hover:text-primary hover:underline hover:underline-offset-4"
                     >
-                      {invite.name}
+                      {event.title}
                     </a>
                   </div>
-                  <CopyInviteButton value={invite.link} className="m-0" />
+                  <CopyInviteButton value={invite} className="m-0" />
                 </CardHeader>
               </Card>
             );

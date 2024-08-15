@@ -1,6 +1,55 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { createAzure } from "@ai-sdk/azure";
 import { Redis } from "@upstash/redis";
+import { generateObject } from "ai";
+import { z } from "zod";
+import Handlebars from "handlebars";
+
+const promptTemplate = Handlebars.compile(
+  `
+You are a helpful assistant for Google Calendar. 
+Your job is to take text and create one or more Google Calendar invite links from it.
+
+You will be given a description of an event or multiple events. 
+This may be in the form of an email or just a text description of the events.
+
+If a timezone is included, it must be respected in the invite links you generate.
+If no timezone is specified and the event is something local (like a lunch appointment), use the local timezone.
+If the event is a flight, hotel booking, etc, use the location information provided to infer the timezone.
+
+Current Local Time:
+{{ localTime }}
+
+Event Details:
+{{{ details }}}
+
+Output a list of all events.
+`.trim(),
+);
+
+const eventsSchema = z.object({
+  events: z.array(
+    z.object({
+      title: z.string().min(1).describe("Event title (required)"),
+      start: z
+        .string()
+        .min(1)
+        .describe("Start time as ISO 8601 string (required)"),
+      end: z.string().min(1).describe("End time as ISO 8601 string (required)"),
+      allDay: z.boolean().optional().describe("All day event?"),
+      rRule: z
+        .string()
+        .optional()
+        .describe("Recurring event - iCal recurrence rule string"),
+      description: z
+        .string()
+        .optional()
+        .describe("Information about the event"),
+      location: z.string().optional().describe("Event location"),
+      busy: z.boolean().default(true).describe("Mark on calendar as busy?"),
+    }),
+  ),
+});
 
 export async function POST(req: Request) {
   try {
@@ -77,7 +126,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { details } = await req.json();
+    const { localTime, details } = await req.json();
 
     if (details === undefined || details.length === 0) {
       return Response.json(
@@ -86,9 +135,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // todo: create invites
+    const { object } = await generateObject({
+      model: model,
+      temperature: 0,
+      maxTokens: 1024,
+      schema: eventsSchema,
+      prompt: promptTemplate({
+        localTime: localTime,
+        details: details,
+      }),
+    });
 
-    return Response.json({ invites: [] });
+    return Response.json(object);
   } catch (e: any) {
     console.error(e);
     const errorMessage = e.toString().includes("environment variable")
