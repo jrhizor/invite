@@ -33,7 +33,102 @@ export default function Home() {
         </Card>
       </div>
 
-      <Accordion type="single" className="py-6 w-full max-w-4xl" collapsible>
+      <div className="flex gap-1 mt-12">
+        <a
+          href="https://www.addtoany.com/share#url=https%3A%2F%2Fwww.invite.sh&amp;title="
+          target="_blank"
+        >
+          <img
+            src="https://static.addtoany.com/buttons/a2a.svg"
+            width="32"
+            height="32"
+            className="bg-muted-foreground hover:bg-secondary-foreground"
+          />
+        </a>
+        <a
+          href="https://www.addtoany.com/add_to/facebook?linkurl=https%3A%2F%2Fwww.invite.sh&amp;linkname="
+          target="_blank"
+        >
+          <img
+            src="https://static.addtoany.com/buttons/facebook.svg"
+            width="32"
+            height="32"
+            className="bg-muted-foreground hover:bg-secondary-foreground"
+          />
+        </a>
+        <a
+          href="https://www.addtoany.com/add_to/reddit?linkurl=https%3A%2F%2Fwww.invite.sh&amp;linkname="
+          target="_blank"
+        >
+          <img
+            src="https://static.addtoany.com/buttons/reddit.svg"
+            width="32"
+            height="32"
+            className="bg-muted-foreground hover:bg-secondary-foreground"
+          />
+        </a>
+        <a
+          href="https://www.addtoany.com/add_to/twitter?linkurl=https%3A%2F%2Fwww.invite.sh&amp;linkname="
+          target="_blank"
+        >
+          <img
+            src="https://static.addtoany.com/buttons/twitter.svg"
+            width="32"
+            height="32"
+            className="bg-muted-foreground hover:bg-secondary-foreground"
+          />
+        </a>
+        <a
+          href="https://www.addtoany.com/add_to/pinterest?linkurl=https%3A%2F%2Fwww.invite.sh&amp;linkname="
+          target="_blank"
+        >
+          <img
+            src="https://static.addtoany.com/buttons/pinterest.svg"
+            width="32"
+            height="32"
+            className="bg-muted-foreground hover:bg-secondary-foreground"
+          />
+        </a>
+        <a
+          href="https://www.addtoany.com/add_to/threads?linkurl=https%3A%2F%2Fwww.invite.sh&amp;linkname="
+          target="_blank"
+        >
+          <img
+            src="https://static.addtoany.com/buttons/threads.svg"
+            width="32"
+            height="32"
+            className="bg-muted-foreground hover:bg-secondary-foreground"
+          />
+        </a>
+        <a
+          href="https://www.addtoany.com/add_to/whatsapp?linkurl=https%3A%2F%2Fwww.invite.sh&amp;linkname="
+          target="_blank"
+        >
+          <img
+            src="https://static.addtoany.com/buttons/whatsapp.svg"
+            width="32"
+            height="32"
+            className="bg-muted-foreground hover:bg-secondary-foreground"
+          />
+        </a>
+        <a
+          href="https://www.addtoany.com/add_to/telegram?linkurl=https%3A%2F%2Fwww.invite.sh&amp;linkname="
+          target="_blank"
+        >
+          <img
+            src="https://static.addtoany.com/buttons/telegram.svg"
+            width="32"
+            height="32"
+            className="bg-muted-foreground hover:bg-secondary-foreground"
+          />
+        </a>
+      </div>
+
+      <Accordion
+        type="single"
+        className="mt-12 mb-6 w-full max-w-4xl border-t"
+        collapsible
+      >
         <AccordionItem value="item-0">
           <AccordionTrigger>What calendars are supported?</AccordionTrigger>
           <AccordionContent>
