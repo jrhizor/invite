@@ -59,7 +59,17 @@ function getLocalTime() {
   return formatter.format(new Date());
 }
 
-function getInvite(calendar: CalendarType, event: CalendarEvent): string {
+function getInvite(
+  calendar: CalendarType,
+  originalEvent: CalendarEvent,
+): string {
+  const event = { ...originalEvent };
+  if (event.description !== undefined) {
+    event.description += "\n\n------\nEvent created by https://www.invite.sh";
+  } else {
+    event.description = "Event created by https://www.invite.sh";
+  }
+
   switch (calendar) {
     case "google":
       return google(event);
