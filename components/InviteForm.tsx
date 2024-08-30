@@ -222,6 +222,7 @@ export function InviteForm() {
                     <a
                       href={invite}
                       className="hover:text-primary hover:underline hover:underline-offset-4"
+                      target="_blank"
                     >
                       {event.title}
                     </a>
