@@ -1,7 +1,7 @@
 import { Ratelimit } from "@upstash/ratelimit";
-import { createAzure } from "@ai-sdk/azure";
 import { Redis } from "@upstash/redis";
-import { generateObject } from "ai";
+import OpenAI from "openai";
+import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import Handlebars from "handlebars";
 
@@ -36,16 +36,18 @@ const eventsSchema = z.object({
         .min(1)
         .describe("Start time as ISO 8601 string (required)"),
       end: z.string().min(1).describe("End time as ISO 8601 string (required)"),
-      allDay: z.boolean().optional().describe("All day event?"),
+      allDay: z.boolean().optional().nullable().describe("All day event?"),
       rRule: z
         .string()
         .optional()
+        .nullable()
         .describe("Recurring event - iCal recurrence rule string"),
       description: z
         .string()
         .optional()
+        .nullable()
         .describe("Information about the event"),
-      location: z.string().optional().describe("Event location"),
+      location: z.string().optional().nullable().describe("Event location"),
       busy: z.boolean().default(true).describe("Mark on calendar as busy?"),
     }),
   ),
@@ -67,31 +69,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const resourceName = process.env["AZURE_OPENAI_RESOURCE_NAME"];
-    if (!resourceName) {
-      throw new Error(
-        "The AZURE_OPENAI_RESOURCE_NAME environment variable is missing or empty.",
-      );
-    }
-
-    const apiKey = process.env["AZURE_OPENAI_API_KEY"];
+    const apiKey = process.env["OPENROUTER_API_KEY"];
     if (!apiKey) {
       throw new Error(
-        "The AZURE_OPENAI_API_KEY environment variable is missing or empty.",
+        "The OPENROUTER_API_KEY environment variable is missing or empty.",
       );
     }
-
-    const deploymentId = process.env["AZURE_OPENAI_DEPLOYMENT_ID"];
-    if (!deploymentId) {
-      throw new Error(
-        "The AZURE_OPENAI_DEPLOYMENT_ID environment variable is missing or empty.",
-      );
-    }
-
-    const model = createAzure({
-      resourceName: resourceName,
-      apiKey: apiKey,
-    }).chat(deploymentId);
 
     const redis = new Redis({
       url: redisUrl,
@@ -135,17 +118,26 @@ export async function POST(req: Request) {
       );
     }
 
-    const { object } = await generateObject({
-      model: model,
-      mode: "json",
-      temperature: 0,
-      maxOutputTokens: 1024,
-      schema: eventsSchema,
-      prompt: promptTemplate({
-        localTime: localTime,
-        details: details,
-      }),
+    const openai = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: apiKey,
     });
+
+    const completion = await openai.chat.completions.parse({
+      model: "openai/gpt-5.1-chat",
+      messages: [
+        {
+          role: "user",
+          content: promptTemplate({
+            localTime: localTime,
+            details: details,
+          }),
+        },
+      ],
+      response_format: zodResponseFormat(eventsSchema, "events"),
+    });
+
+    const object = completion.choices[0].message.parsed;
 
     return Response.json(object);
   } catch (e: any) {

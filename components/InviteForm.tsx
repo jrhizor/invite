@@ -64,7 +64,7 @@ function getInvite(
   originalEvent: CalendarEvent,
 ): string {
   const event = { ...originalEvent };
-  if (event.description !== undefined) {
+  if (event.description !== undefined && event.description !== null) {
     event.description += "\n\n------\nEvent created by https://www.invite.sh";
   } else {
     event.description = "Event created by https://www.invite.sh";
