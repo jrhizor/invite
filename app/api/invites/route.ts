@@ -138,7 +138,7 @@ export async function POST(req: Request) {
     const { object } = await generateObject({
       model: model,
       temperature: 0,
-      maxTokens: 1024,
+      maxOutputTokens: 1024,
       schema: eventsSchema,
       prompt: promptTemplate({
         localTime: localTime,
