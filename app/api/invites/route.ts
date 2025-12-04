@@ -137,6 +137,7 @@ export async function POST(req: Request) {
 
     const { object } = await generateObject({
       model: model,
+      mode: "json",
       temperature: 0,
       maxOutputTokens: 1024,
       schema: eventsSchema,
