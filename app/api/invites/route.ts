@@ -124,7 +124,10 @@ export async function POST(req: Request) {
     });
 
     const completion = await openai.chat.completions.parse({
-      model: "openai/gpt-5.1-chat",
+      // Must support strict json_schema structured outputs. The `-chat`
+      // (chat-latest) variants do NOT — OpenRouter returns 200 with an error
+      // body and `.parse()` throws, surfacing as a 500. Use the full model.
+      model: "openai/gpt-5.1",
       messages: [
         {
           role: "user",
